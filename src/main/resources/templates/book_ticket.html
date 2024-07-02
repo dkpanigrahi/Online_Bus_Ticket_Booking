@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout( ~{::title}, ~{::section} )}">
+<head>
+    <meta charset="UTF-8">
+    <title>Book Ticket</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+<body>
+<section>
+    <div class="container p-4">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h3>Book Ticket</h3>
+                        <!-- Display error message if there is any -->
+                        <p class="text-center text-danger" th:text="${session.error}"></p>
+                    </div>
+                    <div class="card-body">
+                        <form action="/user/bookTicket" method="post">
+                            <div class="form-group">
+                                <label for="passengerName">Passenger Name</label>
+                                <input type="text" class="form-control" id="passengerName" name="passengerName"
+                                       placeholder="Enter Passenger Name" required>
+                            </div>
+                            <!-- <div class="form-group">
+                                <label for="seatno">Seat Number</label>
+                                <select class="form-control" id="seatno" name="seatno" required>
+                                    <option th:each="seat : ${bus.seats}" th:text="${seat.seatNo}" th:value="${seat.seatNo}"
+                                            th:if="${!seat.booked}"></option>
+                                </select>
+                            </div> -->
+                            <div class="form-group">
+							    <label for="seatno">Seat Number</label>
+							    <select class="form-control" id="seatno" name="seatno" required>
+							        <option th:each="seat : ${bus.seats}" th:text="${seat.seatNo}" th:value="${seat.seatNo}"></option>
+							    </select>
+							</div>
+                            <div class="form-group">
+                                <label for="date">Date</label>
+                                <input type="date" class="form-control" id="date" name="date" required>
+                            </div>
+                            <input type="hidden" name="busId" th:value="${bus.id}">
+                            <div class="form-group">
+                                <label>Ticket Price</label>
+                                <p th:text="${ticketPrice}"></p> <!-- Display ticket price -->
+                            </div>
+                            <button type="submit" class="btn btn-success mt-2">Book Ticket</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

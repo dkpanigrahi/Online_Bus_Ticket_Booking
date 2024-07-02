@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout(~{::title}, ~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Booking Confirmation</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+<body>
+<section>
+    <div class="container p-4">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="card">
+                    <div class="card-header text-center">
+                        <h3>Booking Confirmation</h3>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Passenger Name:</strong> <span th:text="${ticket.passengerName}"></span></p>
+                        <p><strong>Seat Number:</strong> <span th:text="${ticket.seatno}"></span></p>
+                        <p><strong>Date:</strong> <span th:text="${ticket.date}"></span></p>
+                        <p><strong>Bus Number:</strong> <span th:text="${ticket.bus.busNo}"></span></p>
+                        <p><strong>Starting Place:</strong> <span th:text="${ticket.bus.startPlace}"></span></p>
+                        <p><strong>Destination Place:</strong> <span th:text="${ticket.bus.destination}"></span></p>
+                        <p><strong>Ticket Price:</strong> <span th:text="${ticketPrice}"></span></p> <!-- Display ticket price -->
+                        <hr>
+                        <h4>Payment Details</h4>
+                        <form action="dummy/payment/confirm" method="post">
+                            <div class="form-group">
+                                <label for="cardNumber">Card Number</label>
+                                <input type="text" class="form-control" id="cardNumber" name="cardNumber" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="expiry">Expiry Date</label>
+                                <input type="text" class="form-control" id="expiry" name="expiry" placeholder="MM/YY" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="cvv">CVV</label>
+                                <input type="text" class="form-control" id="cvv" name="cvv" required>
+                            </div>
+                            <button type="submit" class="btn btn-success mt-2">Pay Now</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

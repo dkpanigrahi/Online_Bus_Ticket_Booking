@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout( ~{::title}, ~{::section} )}">
+<head>
+<meta charset="ISO-8859-1">
+<title>View All Bus</title>
+</head>
+<body>
+    <section>
+        <div class="container p-4">
+            <div class="row">
+                <div class="col-md-12 ">
+                    <div class="card">
+                        <div class="card-header text-center fs-4">All Bus Details</div>
+                        
+                            <th:block th:if="${session.msg}">
+                                <p class="text-center text-success">[[${session.msg}]]</p>
+                                <th:block th:text="${@userServiceImpl.deleteSessionMessage()}"></th:block>
+                            </th:block>
+                        
+                        <div class="card-body">
+                            <table class="table">
+                              <thead>
+                                <tr>
+                                  <th scope="col">Id</th>
+                                  <th scope="col">Bus No.</th>
+                                  <th scope="col">Starting Place</th>
+                                  <th scope="col">Destination Place</th>
+                                  <th scope="col">No. Of Seat</th>
+                                  <th scope="col">Ticket Price</th>
+                                  <th scope="col">Driver Name</th>
+                                  <th scope="col">Conductor Name</th>
+                                  <th scope="col">Actions</th> <!-- New column for actions -->
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr th:each="bus, rowStat : ${busList}">
+                                    <td th:text="${rowStat.count}"></td>
+                                    <td th:text="${bus.busNo}"></td>
+                                    <td th:text="${bus.startPlace}"></td>
+                                    <td th:text="${bus.destination}"></td>
+                                    <td th:text="${bus.totalSeats}"></td>
+                                    <td th:text="${bus.ticketPrice}"></td>
+                                    <td th:text="${bus.driver.name}"></td>
+                                    <td th:text="${bus.conductor.name}"></td>
+                                    <td>
+                                        <a th:href="@{/admin/updateBus/{id}(id=${bus.id})}" class="btn btn-primary btn-sm">Update</a>
+                                        <a th:href="@{/admin/deleteBus/{id}(id=${bus.id})}" class="btn btn-danger btn-sm">Delete</a>
+                                    </td>
+                                </tr>
+                              </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

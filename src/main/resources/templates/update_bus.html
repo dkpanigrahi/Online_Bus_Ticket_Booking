@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout( ~{::title}, ~{::section} )}">
+<head>
+<meta charset="ISO-8859-1">
+<title>Update Bus Details</title>
+</head>
+<body>
+    <section>
+        <div class="container p-4">
+            <div class="row">
+                <div class="col-md-6 offset-md-3">
+                    <div class="card">
+                        <div class="card-header text-center fs-4">Update Bus Details</div>
+                        <div class="card-body">
+                            <form th:action="@{/admin/updateBus}" th:object="${bus}" method="post">
+                                <input type="hidden" th:field="*{id}" />
+                                
+                                <div class="mb-3">
+                                    <label for="busNo" class="form-label">Bus Number</label>
+                                    <input type="text" class="form-control" id="busNo" th:field="*{busNo}" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="startPlace" class="form-label">Starting Place</label>
+                                    <input type="text" class="form-control" id="startPlace" th:field="*{startPlace}" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="destination" class="form-label">Destination</label>
+                                    <input type="text" class="form-control" id="destination" th:field="*{destination}" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="totalSeats" class="form-label">Number of Seats</label>
+                                    <input type="number" class="form-control" id="totalSeats" th:field="*{totalSeats}" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="ticketPrice" class="form-label">Ticket Price</label>
+                                    <input type="text" class="form-control" id="ticketPrice" th:field="*{ticketPrice}" required>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="driver" class="form-label">Driver Name</label>
+                                    <select class="form-select" id="driver" th:field="*{driver.id}" required>
+                                        <option th:each="driver : ${driverList}" th:value="${driver.id}" th:text="${driver.name}"></option>
+                                    </select>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="conductor" class="form-label">Conductor Name</label>
+                                    <select class="form-select" id="conductor" th:field="*{conductor.id}" required>
+                                        <option th:each="conductor : ${conductorList}" th:value="${conductor.id}" th:text="${conductor.name}"></option>
+                                    </select>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">Update Bus</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>

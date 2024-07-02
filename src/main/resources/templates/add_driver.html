@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout( ~{::title}, ~{::section} )}">
+<head>
+<meta charset="ISO-8859-1">
+<title>Add Driver</title>
+</head>
+<body>
+	<section>
+		<div class="container p-5">
+			<div class="row">
+				<div class="col-md-4 offset-md-4">
+					<div class="card shadow p-3 mb-5 bg-body rounded">
+						<div class="card-header text-center">
+							<h3>Add New Driver</h3>
+						<th:block th:if="${session.msg}">
+							<p class="text-center text-success">[[${session.msg}]]</p>
+							<th:block th:text="${@userServiceImpl.deleteSessionMessage()}"></th:block>
+						
+						</th:block>
+							
+						</div>
+						<div class="card-body">
+						<form action="saveDriver" method="post">
+							  <div class="mb-3">
+							    <label>Enter Driver Full Name</label>
+							    <input type="text" class="form-control" name="name">
+							  </div>
+							  
+							  <div class="mb-3">
+							    <label>Enter Phone No.</label>
+							    <input type="text" class="form-control" name="phoneno">
+							  </div>
+							  
+							  <div class="mb-3">
+							    <label>Enter Salary</label>
+							    <input type="text" class="form-control" name="salary">
+							  </div>
+							   
+							   
+							  <button type="submit" class="btn btn-primary ">Save</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</body>
+</html>

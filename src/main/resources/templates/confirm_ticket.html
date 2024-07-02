@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout( ~{::title}, ~{::section} )}">
+<head>
+    <meta charset="UTF-8">
+    <title>Ticket Confirmation</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+<body>
+<section>
+    <div class="container mt-5">
+        <div class="card">
+            <div class="card-header text-center">
+                <h3>Booking Confirmation</h3>
+            </div>
+            <div class="card-body">
+                <p><strong>Passenger Name:</strong> <span th:text="${ticket.passengerName}"></span></p>
+                <p><strong>Seat Number:</strong> <span th:text="${ticket.seatno}"></span></p>
+                <p><strong>Date:</strong> <span th:text="${ticket.date}"></span></p>
+                <p><strong>Bus Number:</strong> <span th:text="${ticket.bus.busNo}"></span></p>
+                <p><strong>Starting Place:</strong> <span th:text="${ticket.bus.startPlace}"></span></p>
+                <p><strong>Destination Place:</strong> <span th:text="${ticket.bus.destination}"></span></p>
+                <p><strong>Ticket Price:</strong> <span th:text="${ticketPrice}"></span></p>
+                <hr>
+                <h4>Payment Status</h4>
+                <p><strong>Status:</strong> <span th:text="${paymentStatus}"></span></p>
+                <a href="/user/tickets" class="btn btn-primary mt-2">View My Tickets</a>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

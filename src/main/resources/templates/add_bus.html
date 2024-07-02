@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout( ~{::title}, ~{::section} )}">
+<head>
+    <meta charset="ISO-8859-1">
+    <title>Add Bus</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+<body>
+    <section>
+        <div class="container p-5">
+            <div class="row">
+                <div class="col-md-4 offset-md-4">
+                    <div class="card shadow p-3 mb-5 bg-body rounded">
+                        <div class="card-header text-center">
+                            <h3>Add New Bus</h3>
+                            <th:block th:if="${session.msg}">
+                                <p class="text-center text-success">[[${session.msg}]]</p>
+                                <th:block th:text="${@userServiceImpl.deleteSessionMessage()}"></th:block>
+                            </th:block>
+                        </div>
+                        <div class="card-body">
+                            <form action="createBus" method="post">
+                                <div class="mb-3">
+                                    <label for="busNo">Enter Bus No.</label>
+                                    <input type="text" class="form-control" id="busNo" name="busNo" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="startPlace">Enter Start Place</label>
+                                    <input type="text" class="form-control" id="startPlace" name="startPlace" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="destination">Enter Destination Place</label>
+                                    <input type="text" class="form-control" id="destination" name="destination" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="totalSeats">Enter Total Seats</label>
+                                    <input type="number" class="form-control" id="totalSeats" name="totalSeats" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="totalSeats">Enter Ticket Price</label>
+                                    <input type="number" class="form-control" id="ticketPrice" name="ticketPrice" required>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="driver">Select Driver</label>
+                                    <select class="form-control" id="driver" name="driver.id" required>
+                                        <option th:each="driver : ${driverList}" th:value="${driver.id}" th:text="${driver.name}"></option>
+                                    </select>
+                                </div>
+                                <div class="mb-3">
+                                    <label for="conductor">Select Conductor</label>
+                                    <select class="form-control" id="conductor" name="conductor.id" required>
+                                        <option th:each="conductor : ${conductorList}" th:value="${conductor.id}" th:text="${conductor.name}"></option>
+                                    </select>
+                                </div>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
