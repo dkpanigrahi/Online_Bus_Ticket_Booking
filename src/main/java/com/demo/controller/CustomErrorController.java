@@ -44,7 +44,7 @@ public class CustomErrorController implements ErrorController {
             model.addAttribute("message", "Unexpected Error");
         }
         
-        return "error"; // Name of the Thymeleaf template
+        return "error"; 
     }
 
     
