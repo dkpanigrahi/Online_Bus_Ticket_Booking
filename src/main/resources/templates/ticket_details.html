@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:replace="~{base :: layout(~{::title}, ~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Ticket Details</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+</head>
+<body>
+<section>
+        <div class="ticket">
+          <div class="ticket-header">
+            <img src="/image/jayabilas.png" alt="JayaBilas Travels" class="ticket-logo">
+            <h2>JayaBilas Travels</h2>
+            <h4>Ticket Details</h4>
+        </div>
+        <div class="ticket-info">
+            <p><strong>Ticket ID:</strong> <span th:text="${ticket.id}"></span></p>
+            <p><strong>Passenger Name:</strong> <span th:text="${ticket.passengerName}"></span></p>
+            <p><strong>Seat Number:</strong> <span th:text="${ticket.seatno}"></span></p>
+        </div>
+        <div class="date-container">
+            <div class="date-column">
+                <p><strong>Date:</strong> <span th:text="${ticket.date}"></span></p>
+            </div>
+            <div class="date-column">
+                <p><strong>Bus Number:</strong> <span th:text="${ticket.bus.busNo}"></span></p>
+            </div>
+        </div>
+        <div class="ticket-info">
+            <p><strong>Start Place:</strong> <span th:text="${ticket.bus.startPlace}"></span></p>
+            <p><strong>Destination:</strong> <span th:text="${ticket.bus.destination}"></span></p>
+        </div>
+        <div class="ticket-footer">
+            <p class="text-center">Travel Company Details:</p>
+            
+            <div class="container">
+			  <div class="row">
+			    <div class="col-sm-5 col-md-6">
+			      <p>JayaBilas Travels Pvt. Ltd.</p>
+                <p>1234 Main Street, City</p>
+                <p>State, Country - 123456</p>
+			    </div>
+			    <div class="col-sm-5 col-md-6">
+			      <p>Phone: +91-123-456-7890</p>
+                <p>Email: support@jayabilas.com</p>
+			    </div>
+			  </div>
+			  
+			</div>
+        </div>
+        <button onclick="window.print();" class="btn btn-primary btn-print">Print Ticket</button>
+    </div>
+    
+</section>
+</body>
+</html>
+  
