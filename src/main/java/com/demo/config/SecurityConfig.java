@@ -9,49 +9,52 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationFailureHandler;
+import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
 
-	@Autowired
-	public CustomAuthSuccessHandler successHandler;
-	
-	@Bean
-	public BCryptPasswordEncoder passwordEncoder()
-	{
-		return new BCryptPasswordEncoder();
-	}
-	
-	@Bean
-	public UserDetailsService getDetailsService()
-	{
-		return new CustomUserDetailsService();
-	}
-	
-	@Bean
-	public DaoAuthenticationProvider getAuthenticationProvider()
-	{
-		DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-		daoAuthenticationProvider.setUserDetailsService(getDetailsService());
-		daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-		
-		return daoAuthenticationProvider;
-	}
-	
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception
-	{
+    @Autowired
+    public CustomAuthSuccessHandler successHandler;
 
-		
-		http.csrf().disable().authorizeHttpRequests().requestMatchers("/user/**").hasRole("USER")
-		.requestMatchers("/admin/**").hasRole("ADMIN")
-		.requestMatchers("/**").permitAll().and()
-		.formLogin().loginPage("/signin").loginProcessingUrl("/loginUser")
-		.successHandler(successHandler)
-		.and().logout().permitAll();
-		
-		
-		return http.build();
-	}
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public UserDetailsService getDetailsService() {
+        return new CustomUserDetailsService();
+    }
+
+    @Bean
+    public DaoAuthenticationProvider getAuthenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setUserDetailsService(getDetailsService());
+        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+        return daoAuthenticationProvider;
+    }
+
+    @Bean
+    public AuthenticationFailureHandler authenticationFailureHandler() {
+        SimpleUrlAuthenticationFailureHandler handler = new SimpleUrlAuthenticationFailureHandler();
+        handler.setUseForward(false);
+        handler.setDefaultFailureUrl("/signin?error=true");
+        return handler;
+    }
+
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        http.csrf().disable().authorizeHttpRequests().requestMatchers("/user/**").hasRole("USER")
+        .requestMatchers("/admin/**").hasRole("ADMIN")
+        .requestMatchers("/**").permitAll().and()
+        .formLogin().loginPage("/signin").loginProcessingUrl("/loginUser")
+        .successHandler(successHandler)
+        .failureHandler(authenticationFailureHandler())  // Add this line
+        .and().logout().permitAll();
+        
+        return http.build();
+    }
 }

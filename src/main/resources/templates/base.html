@@ -133,8 +133,72 @@
     transform: scale(1.1); /* Scale up the image on hover */
 }
 
-	
-		
+	/* Styles for ticket container */
+		.ticket {
+            position: relative;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            max-width: 600px;
+            margin: 20px auto;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            background: #fff;
+            overflow: hidden;
+        }
+        .ticket-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .ticket-logo {
+            max-height: 100px;
+        }
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.1;
+            z-index: -1;
+            pointer-events: none;
+            font-size: 3em;
+            color: #ddd;
+            text-align: center;
+            line-height: 1;
+            width: 100%;
+            white-space: nowrap;
+            transform: rotate(-45deg) translate(-50%, -50%);
+        }
+        .ticket-details {
+            margin-top: 20px;
+        }
+        .ticket-footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #555;
+        }
+        .btn-print {
+            margin-top: 10px;
+        }
+        .ticket-info {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-top: 10px;
+            background: #fafafa;
+        }
+        .date-container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .date-column {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .date-column:last-child {
+            margin-right: 0;
+        }
 		
     </style>
 </head>

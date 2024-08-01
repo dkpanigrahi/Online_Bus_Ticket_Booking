@@ -77,4 +77,5 @@ public class Ticket {
 	public void setBus(Bus bus) {
 		this.bus = bus;
 	}
+
 }

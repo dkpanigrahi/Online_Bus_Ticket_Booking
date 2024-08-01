@@ -18,7 +18,10 @@
                     <div class="card-header text-center">
                         <h3>Search Buses</h3>
                         
-                        <p class="text-center text-danger" th:text="${session.error}"></p>
+                        <th:block th:if="${session.msg}">
+                            <p class="text-center text-success" th:text="${session.msg}"></p>
+                            <th:block th:text="${@userServiceImpl.deleteSessionMessage()}"></th:block>
+                        </th:block>
                     </div>
                     <div class="card-body">
                         <form action="search" method="post">
@@ -35,7 +38,7 @@
                                                placeholder="Enter Destination Place" required>
                                     </div>
                                     <div class="col">
-                                        <button type="submit" class="btn btn-primary mt-4">Search</button>
+                                        <button type="submit" class="btn btn-success mt-4">Search</button>
                                     </div>
                                 </div>
                             </div>
