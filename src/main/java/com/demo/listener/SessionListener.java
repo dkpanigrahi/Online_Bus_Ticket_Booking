@@ -3,12 +3,9 @@ package com.demo.listener;
 import com.demo.entity.Seat;
 import com.demo.entity.Ticket;
 import com.demo.repository.SeatRepository;
-
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
-
 import java.time.LocalDateTime;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,7 +24,8 @@ public class SessionListener implements HttpSessionListener {
             Seat seat = seatRepository.findByBusAndSeatNo(ticket.getBus(), ticket.getSeatno());
             if (seat != null && seat.isInProcess() && seat.getExpirationTime().isAfter(LocalDateTime.now())) {
                 seat.setInProcess(false);
-                seat.setExpirationTime(null); // Clear expiration time
+                seat.setExpirationTime(null);
+                seat.setBookingDate(null);								// Clear expiration time
                 seatRepository.save(seat);
             }
         }
