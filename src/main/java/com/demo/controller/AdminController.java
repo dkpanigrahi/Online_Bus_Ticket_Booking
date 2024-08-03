@@ -179,6 +179,20 @@ public class AdminController {
         return "admin_tickets";
     }
 	
+	@GetMapping("/drivers")
+    public String viewAllDriver(Model model) {
+        List<Driver> driver = driverRepo.findAll();
+        model.addAttribute("drivers", driver);
+        return "all_driver";
+    }
+	
+	@GetMapping("/conductors")
+    public String viewAllConductors(Model model) {
+        List<Conductor> conductors = conductorRepo.findAll();
+        model.addAttribute("conductors", conductors);
+        return "all_conductors";
+    }
+	
 	@GetMapping("/changePassword")
     public String showChangePasswordForm(Model model) {
         model.addAttribute("passwordForm", new PasswordForm());
@@ -236,6 +250,22 @@ public class AdminController {
         busService.deleteBusById(id); // Delete bus by ID
         session.setAttribute("msg", "Bus deleted successfully");
         return "redirect:/admin/viewBus";
+    }
+    
+    
+    @GetMapping("/deleteDriver/{id}")
+    public String deleteDriver(@PathVariable("id") int id, HttpSession session) {
+        driverRepo.deleteById(id); // Delete Driver by ID
+        session.setAttribute("msg", "Driver deleted successfully");
+        return "redirect:/admin/all_driver";
+    }
+    
+    
+    @GetMapping("/deleteConductor/{id}")
+    public String deleteConductor(@PathVariable("id") int id, HttpSession session) {
+        conductorRepo.deleteById(id); // Delete Conductor by ID
+        session.setAttribute("msg", "Conductor deleted successfully");
+        return "redirect:/admin/all_conductors";
     }
 
 }

@@ -6,4 +6,5 @@ import com.demo.entity.Driver;
 
 public interface DriverRepository extends JpaRepository<Driver, Integer> {
 
+	
 }
