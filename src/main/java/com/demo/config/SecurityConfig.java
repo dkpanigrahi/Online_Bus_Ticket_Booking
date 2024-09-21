@@ -109,6 +109,11 @@ public class SecurityConfig {
         handler.setDefaultFailureUrl("/signin?error=true");
         return handler;
     }
+    
+    @Bean
+    public LogoutSuccessHandler customLogoutSuccessHandler() {
+        return new CustomLogoutSuccessHandler();
+    }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -123,13 +128,13 @@ public class SecurityConfig {
                     .loginProcessingUrl("/loginUser")
                     .successHandler(successHandler)
                     .failureHandler(authenticationFailureHandler())
-            .and()
-                .logout()
-                    .logoutUrl("/logout")
-                    .logoutSuccessUrl("/signin?logout") // Redirect after logout
-                    .invalidateHttpSession(true) // Invalidate the session
-                    .deleteCookies("JSESSIONID") // Optionally delete cookies
-                    .permitAll()
+                    .and()
+                    .logout()
+                        .logoutUrl("/logout")
+                        .logoutSuccessHandler(customLogoutSuccessHandler()) // Use the custom logout handler
+                        .invalidateHttpSession(true)
+                        .deleteCookies("JSESSIONID")
+                        .permitAll()
             .and()
                 .exceptionHandling()
                     .accessDeniedPage("/access-denied"); // Optional access denied page
