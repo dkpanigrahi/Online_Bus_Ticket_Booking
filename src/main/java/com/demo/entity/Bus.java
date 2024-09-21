@@ -34,8 +34,6 @@ public class Bus {
 	@OneToOne
 	private Conductor conductor;
 	
-	@OneToMany(mappedBy = "bus", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Seat> seats;
 
 	public int getId() {
 		return id;
@@ -93,16 +91,6 @@ public class Bus {
 		this.conductor = conductor;
 	}
 
-	public List<Seat> getSeats() {
-		return seats;
-	}
-
-	public void setSeats(List<Seat> seats) {
-		this.seats = seats;
-	}
-	
-	
-
 	public int getTicketPrice() {
 		return ticketPrice;
 	}
@@ -110,14 +98,6 @@ public class Bus {
 	public void setTicketPrice(int ticketPrice) {
 		this.ticketPrice = ticketPrice;
 	}
-
-	@Override
-	public String toString() {
-		return "Bus [id=" + id + ", busNo=" + busNo + ", startPlace=" + startPlace + ", destination=" + destination
-				+ ", totalSeats=" + totalSeats + ", driver=" + driver + ", conductor=" + conductor + ", seats=" + seats
-				+ "]";
-	}
-
 	
 	
 	

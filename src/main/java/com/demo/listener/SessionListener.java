@@ -1,8 +1,8 @@
 package com.demo.listener;
 
-import com.demo.entity.Seat;
+import com.demo.entity.Booking;
 import com.demo.entity.Ticket;
-import com.demo.repository.SeatRepository;
+import com.demo.repository.BookingRepository;
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.servlet.http.HttpSessionListener;
 import java.time.LocalDateTime;
@@ -13,20 +13,18 @@ import org.springframework.stereotype.Component;
 public class SessionListener implements HttpSessionListener {
 
     @Autowired
-    private SeatRepository seatRepository;
+    private BookingRepository bookingRepository; // BookingRepository injected
 
     @Override
     public void sessionDestroyed(HttpSessionEvent se) {
-        // Retrieve the ticket from the session
-        Ticket ticket = (Ticket) se.getSession().getAttribute("ticket");
-        if (ticket != null) {
-            // Release the seat lock if it is still in process
-            Seat seat = seatRepository.findByBusAndSeatNo(ticket.getBus(), ticket.getSeatno());
-            if (seat != null && seat.isInProcess() && seat.getExpirationTime().isAfter(LocalDateTime.now())) {
-                seat.setInProcess(false);
-                seat.setExpirationTime(null);
-                seat.setBookingDate(null);								// Clear expiration time
-                seatRepository.save(seat);
+        // Retrieve the booking from the session
+        Booking booking = (Booking) se.getSession().getAttribute("ticket");
+        if (booking != null && booking.isInProcess()) {
+            // Release the seat lock if the booking is still in process and not expired
+            if (booking.getExpirationTime() != null && booking.getExpirationTime().isAfter(LocalDateTime.now())) {
+                booking.setInProcess(false); 
+                booking.setExpirationTime(null);
+                bookingRepository.save(booking); 
             }
         }
     }

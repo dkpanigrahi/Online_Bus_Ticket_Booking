@@ -36,8 +36,11 @@
                                 <td th:text="${ticket.bus.busNo}"></td>
                                 <td>
                                     <!-- Add any actions like view details or cancel -->
-                                    <a th:href="@{/user/viewTicket/{ticketId}(ticketId=${ticket.id})}" class="btn btn-primary btn-sm">View Details</a>
+                                    <a th:href="@{/user/viewTicket/{ticketId}(ticketId=${ticket.id})}" class="btn custom-btn btn-sm">View Details</a>
                                 </td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(tickets)}">
+                                <td colspan="7" class="text-center">No Ticket Available.</td>
                             </tr>
                             </tbody>
                         </table>

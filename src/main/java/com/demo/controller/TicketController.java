@@ -3,6 +3,7 @@ package com.demo.controller;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,12 +20,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.demo.dto.PaymentDetails;
+import com.demo.entity.Booking;
 import com.demo.entity.Bus;
-import com.demo.entity.Seat;
+
 import com.demo.entity.Ticket;
 import com.demo.entity.User;
+import com.demo.repository.BookingRepository;
 import com.demo.repository.BusRepository;
-import com.demo.repository.SeatRepository;
+
 import com.demo.repository.TicketRepository;
 import com.demo.repository.UserRepository;
 import com.demo.service.TicketService;
@@ -35,16 +38,17 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/user")
 public class TicketController {
 
-	@Autowired
+    @Autowired
     private UserRepository userRepo;
     @Autowired
     private TicketRepository ticketRepository;
     @Autowired
     private BusRepository busRepository;
-    @Autowired
-    private SeatRepository seatRepository;
+    
     @Autowired
     private TicketService ticketService;
+    @Autowired
+    private BookingRepository bookingRepository;
 
     @ModelAttribute
     public void commonUser(Principal p, Model m) {
@@ -56,49 +60,39 @@ public class TicketController {
     }
 
     @GetMapping("/bookTicket/{busId}")
-    public String bookTicketForm(@PathVariable("busId") int busId,
-                                 @RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-                                 HttpSession session, Model model) {
+    public String bookTicketForm(@PathVariable("busId") int busId, HttpSession session, Model model) {
         Bus bus = busRepository.findById(busId).orElse(null);
         if (bus == null) {
             session.setAttribute("error", "Bus not found!!!!");
             return "error_page";
         }
-
-        List<Seat> seats = seatRepository.findByBusAndBookingDate(bus, date);
-        // Handle seat expiration
-        seats.forEach(seat -> {
-            if (seat.isInProcess() && seat.getExpirationTime().isBefore(LocalDateTime.now())) {
-                seat.setInProcess(false);
-                seat.setExpirationTime(null);
-                seatRepository.save(seat);
-            }
-        });
-
-        List<Seat> bookedSeats = seats.stream()
-                                      .filter(Seat::isBooked)
-                                      .collect(Collectors.toList());
-
+        
+        
+        List<String> seatOptions = new ArrayList<>();
+        for (int i = 1; i <= bus.getTotalSeats(); i++) {
+            seatOptions.add("Seat" + i); 
+        }
+        model.addAttribute("seatOptions", seatOptions); 
         model.addAttribute("bus", bus);
-        model.addAttribute("date", date);
-        model.addAttribute("bookedSeats", bookedSeats);
-        model.addAttribute("ticketPrice", bus.getTicketPrice()); // Add ticket price to the model
+        model.addAttribute("ticketPrice", bus.getTicketPrice());
 
         return "book_ticket";
     }
 
+
     @Transactional
     @PostMapping("/bookTicket")
     public String bookTicket(@RequestParam("passengerName") String passengerName,
-                             @RequestParam("seatno") String seatno,
-                             @RequestParam("date") LocalDate date,
+                             @RequestParam("seatno") int seatNo,
+                             @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                              @RequestParam("busId") int busId,
                              Principal principal,
-                             Model model, HttpSession session) {
+                             HttpSession session,Model model) {
         if (principal == null) {
             session.setAttribute("error", "User not authenticated");
             return "redirect:/user/bookTicket/" + busId;
         }
+
 
         String email = principal.getName();
         User user = userRepo.findByEmail(email);
@@ -108,41 +102,43 @@ public class TicketController {
             return "redirect:/user/bookTicket/" + busId;
         }
 
-        Seat seat = seatRepository.findByBusAndSeatNo(bus, seatno);
-        if (seat == null || seat.isBooked() || seat.isInProcess()) {
-            session.setAttribute("error", "Seat is already booked, in process, or does not exist");
+        // Check if the seat is already booked or in process for the selected date
+        Booking existingBooking = bookingRepository.findBySeatNoAndBookingDate(seatNo, date);
+        if (existingBooking != null && (existingBooking.isBooked() || existingBooking.isInProcess())) {
+            session.setAttribute("error", "Seat " + seatNo + " is already booked or in process for this date");
             return "redirect:/user/bookTicket/" + busId;
         }
 
-        // Lock the seat temporarily
-        seat.setInProcess(true);
-        seat.setExpirationTime(LocalDateTime.now().plusMinutes(10)); // Set expiration time
-        seat.setBookingDate(date);
-        seatRepository.save(seat);
+        // Create a new booking (temporarily lock the seat)
+        Booking booking = new Booking();
+        booking.setSeatNo(seatNo);
+        booking.setPassengerName(passengerName);
+        booking.setBookingDate(date);
+        booking.setInProcess(true);  // Mark as "in process" while payment is being handled
+        booking.setExpirationTime(LocalDateTime.now().plusMinutes(10)); // Temporary hold for 10 minutes
+        booking.setUser(user);
+        booking.setBus(bus);
 
-        Ticket ticket = new Ticket();
-        ticket.setPassengerName(passengerName);
-        ticket.setSeatno(seatno);
-        ticket.setDate(date);
-        ticket.setUser(user);
-        ticket.setBus(bus);
+        bookingRepository.save(booking);  // Save the booking
 
-        session.setAttribute("ticket", ticket); // Store ticket in session
+        // Store the booking in session for later use in payment
+        session.setAttribute("ticket", booking);
 
-        return "redirect:/user/paymentPage"; // Redirect to payment page after booking
+        return "redirect:/user/paymentPage";
     }
+
 
     @GetMapping("/paymentPage")
     public String showPaymentPage(HttpSession session, Model model) {
-        Ticket ticket = (Ticket) session.getAttribute("ticket");
-        if (ticket == null) {
+        Booking booking = (Booking) session.getAttribute("ticket");
+        if (booking == null) {
             session.setAttribute("error", "Ticket information missing");
             return "redirect:/user/bookTicket";
         }
 
-        model.addAttribute("ticket", ticket);
-        model.addAttribute("paymentDetails", new PaymentDetails()); // To bind payment form
-        model.addAttribute("ticketPrice", ticket.getBus().getTicketPrice()); // Add ticket price to the model
+        model.addAttribute("ticket", booking);
+        model.addAttribute("paymentDetails", new PaymentDetails());
+        model.addAttribute("ticketPrice", booking.getBus().getTicketPrice());
 
         return "payment_page";
     }
@@ -152,60 +148,69 @@ public class TicketController {
     public String confirmPayment(@ModelAttribute PaymentDetails paymentDetails, HttpSession session, Model model) {
         boolean paymentSuccess = processDummyPayment(paymentDetails);
 
+        Booking booking = (Booking) session.getAttribute("ticket");
+        if (booking == null) {
+            session.setAttribute("error", "Ticket information missing");
+            return "redirect:/user/bookTicket";
+        }
+
         if (paymentSuccess) {
             session.setAttribute("paymentStatus", "Payment successful");
 
-            Ticket ticket = (Ticket) session.getAttribute("ticket");
-            if (ticket == null) {
-                session.setAttribute("error", "Ticket information missing");
-                return "redirect:/user/bookTicket";
-            }
-
             try {
                 // Mark the seat as booked
-                Seat seat = seatRepository.findByBusAndSeatNo(ticket.getBus(), ticket.getSeatno());
-                seat.setBooked(true);
-                seat.setInProcess(false); // Clear the in-process status
-                seat.setExpirationTime(null); // Clear expiration time
-                
-                System.out.println(seat);
-                seatRepository.save(seat);
+                booking.setBooked(true);
+                booking.setInProcess(false);
+                booking.setExpirationTime(null);
+                bookingRepository.save(booking);
 
-                // Save the ticket to the database
-                ticketRepository.save(ticket);
-                session.removeAttribute("ticket"); // Clear ticket from session after payment
-                return "redirect:/user/confirm_ticket?ticketId=" + ticket.getId(); // Redirect to confirmation page with ticket ID
+                // Create and save a new Ticket entity
+                Ticket ticket = new Ticket();
+                ticket.setPassengerName(booking.getPassengerName());
+                ticket.setSeatno(booking.getSeatNo());
+                ticket.setDate(booking.getBookingDate());
+                ticket.setUser(booking.getUser());
+                ticket.setBus(booking.getBus());
+
+                ticketRepository.save(ticket); // Save the ticket to the database
+
+                session.removeAttribute("ticket");
+                return "redirect:/user/confirm_ticket?ticketId=" + ticket.getId() + "&bookingId=" + booking.getId();
+
             } catch (Exception e) {
+                // Delete the booking if any error occurs while saving the ticket
+                bookingRepository.delete(booking); // Remove booking from the database
                 session.setAttribute("error", "An error occurred while saving ticket: " + e.getMessage());
                 return "redirect:/user/paymentPage";
             }
         } else {
+            // If payment fails, delete the booking
+            bookingRepository.delete(booking); // Remove booking from the database
             session.setAttribute("paymentStatus", "Payment failed");
             return "redirect:/user/paymentPage";
         }
     }
 
+
+
+
     @GetMapping("/confirm_ticket")
-    public String showConfirmationPage(@RequestParam("ticketId") int ticketId, Model model) {
-        Ticket ticket = ticketService.getTicketById(ticketId);
-        if (ticket == null) {
+    public String showConfirmationPage(@RequestParam("ticketId") int ticketId,
+    								   @RequestParam("bookingId") int bookingId, Model model) {
+        Booking booking = bookingRepository.findById(bookingId).orElse(null);
+        Ticket ticket = ticketRepository.findById(ticketId).orElse(null);
+        if (booking == null) {
             return "error/404";
         }
-        model.addAttribute("ticket", ticket);
-        model.addAttribute("ticketPrice", ticket.getBus().getTicketPrice());
-        model.addAttribute("paymentStatus", "Payment successful"); // Assuming payment was successful
+
+        model.addAttribute("ticket", booking);
+        model.addAttribute("ticketPrice", booking.getBus().getTicketPrice());
+        model.addAttribute("paymentStatus", "Payment successful");
         return "confirm_ticket";
     }
 
     private boolean processDummyPayment(PaymentDetails paymentDetails) {
         // Mocking payment processing logic
-        // Simulate successful payment confirmation for demonstration
-        // You can add your own logic here for payment integration
         return true;
-    }
-
-    private double calculateTicketPrice(Ticket ticket) {
-        // Implement your ticket price calculation logic here
-        return 0.0; // Replace with actual calculation
     }
 }

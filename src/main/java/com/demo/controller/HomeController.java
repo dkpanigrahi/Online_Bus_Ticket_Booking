@@ -63,7 +63,6 @@ public class HomeController {
 	public String saveUser(@ModelAttribute User user,HttpSession session)
 	{
 		
-		System.out.println(user);
 		User u = userService.saveuser(user);
 		
 		if(u!=null) {

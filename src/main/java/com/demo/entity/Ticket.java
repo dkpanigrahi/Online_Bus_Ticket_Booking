@@ -20,7 +20,7 @@ public class Ticket {
 	
 	private String passengerName;
 	
-	private String seatno;
+	private int seatno;
 	
 	private LocalDate date;
 	
@@ -46,11 +46,13 @@ public class Ticket {
 	    this.passengerName = passengerName;
 	}
 
-	public String getSeatno() {
+	
+
+	public int getSeatno() {
 		return seatno;
 	}
 
-	public void setSeatno(String seatno) {
+	public void setSeatno(int seatno) {
 		this.seatno = seatno;
 	}
 

@@ -199,6 +199,72 @@
         .date-column:last-child {
             margin-right: 0;
         }
+        /* Fix for the dropdown width */
+		.navbar-nav .dropdown-menu {
+		    min-width: 150px; 
+		    max-width: 200px; 
+		    left: auto; 
+		    right: 0; 
+		}
+		
+		/* Fix for dropdown items */
+		.navbar-nav .dropdown-menu .dropdown-item {
+		    white-space: nowrap;
+		}
+		
+		.navbar-nav .dropdown-menu {
+		    padding: 10px;
+		}
+        
+        /* Prevent the login button from turning white when active */
+		.nav-item .btn-outline-light.active, 
+		.nav-item .btn-outline-light:focus, 
+		.nav-item .btn-outline-light:active {
+		    color: DarkSlateBlue; /* Maintain the text color */
+		    background-color: transparent; /* Keep the background transparent */
+		    border-color: white; /* Keep the border white */
+		}
+        
+       .form-scrollable {
+		    max-height: 300px; /* Adjust this height as needed */
+		    overflow-y: auto;
+		    padding: 10px; /* Optional: Add padding for better appearance */
+		}
+		 
+    /* Custom CSS to reduce width and increase height */
+    .bus-info-card {
+        width: 250px; /* Reduce width */
+        height: 350px; /* Increase height */
+    }
+
+    .bus-info-card p {
+        margin-bottom: 0.5rem; /* Add spacing between paragraphs */
+    }
+	.bus-info-card {
+        width: 250px; /* Reduce width */
+        height: 350px; /* Increase height */
+    }
+
+    .bus-info-card p {
+        margin-bottom: 0.5rem; /* Add spacing between paragraphs */
+    }
+
+    /* Reduce spacing between the bus info and main form */
+    .form-container {
+        margin-left: -20px; /* Move the form container to the left */
+    }
+    
+    .custom-btn {
+	  background-color: MidnightBlue;
+	  color: white;;
+	  border: none;
+	}
+    
+    .custom-btn:hover {
+	  background-color: DarkSlateBlue; /* Slightly darker shade or any hover color */
+	  color: white; /* Ensure the text stays white */
+	}
+        
 		
     </style>
 </head>

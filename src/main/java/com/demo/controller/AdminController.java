@@ -18,7 +18,6 @@ import com.demo.dto.PasswordForm;
 import com.demo.entity.Bus;
 import com.demo.entity.Conductor;
 import com.demo.entity.Driver;
-import com.demo.entity.Seat;
 import com.demo.entity.Ticket;
 import com.demo.entity.User;
 import com.demo.repository.BusRepository;
@@ -27,7 +26,7 @@ import com.demo.repository.DriverRepository;
 import com.demo.repository.TicketRepository;
 import com.demo.repository.UserRepository;
 import com.demo.service.BusService;
-import com.demo.service.SeatService;
+
 import com.demo.service.TicketService;
 
 import jakarta.servlet.http.HttpSession;
@@ -36,8 +35,6 @@ import jakarta.servlet.http.HttpSession;
 @RequestMapping("/admin")
 public class AdminController {
 
-    @Autowired
-    private SeatService seatService;
 	
     @Autowired
 	private UserRepository userRepo;
@@ -93,19 +90,14 @@ public class AdminController {
         // Save the bus first to get the bus ID
         Bus savedBus = busService.savebus(bus);
 
-        // Generate seats based on totalSeats
-        List<Seat> seats = new ArrayList<>();
-        for (int i = 1; i <= bus.getTotalSeats(); i++) {
-            Seat seat = new Seat();
-            seat.setSeatNo("Seat " + i);
-            seat.setBooked(false);
-            seat.setBus(savedBus);
-            seats.add(seat);
-        }
-        seatService.saveAll(seats);
-
-        savedBus.setSeats(seats);
-        busService.savebus(savedBus);
+		/*
+		 * // Generate seats based on totalSeats List<Seat> seats = new ArrayList<>();
+		 * for (int i = 1; i <= bus.getTotalSeats(); i++) { Seat seat = new Seat();
+		 * seat.setSeatNo("Seat " + i); seat.setBooked(false); seat.setBus(savedBus);
+		 * seats.add(seat); } seatService.saveAll(seats);
+		 * 
+		 * savedBus.setSeats(seats); busService.savebus(savedBus);
+		 */
 
         session.setAttribute("msg", "Bus added successfully with seats!");
 
@@ -255,17 +247,17 @@ public class AdminController {
     
     @GetMapping("/deleteDriver/{id}")
     public String deleteDriver(@PathVariable("id") int id, HttpSession session) {
-        driverRepo.deleteById(id); // Delete Driver by ID
+        driverRepo.deleteById(id);
         session.setAttribute("msg", "Driver deleted successfully");
-        return "redirect:/admin/all_driver";
+        return "redirect:/admin/drivers";
     }
     
     
     @GetMapping("/deleteConductor/{id}")
     public String deleteConductor(@PathVariable("id") int id, HttpSession session) {
-        conductorRepo.deleteById(id); // Delete Conductor by ID
+        conductorRepo.deleteById(id);
         session.setAttribute("msg", "Conductor deleted successfully");
-        return "redirect:/admin/all_conductors";
+        return "redirect:/admin/conductors";
     }
 
 }

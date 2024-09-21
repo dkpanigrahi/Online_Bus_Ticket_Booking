@@ -8,51 +8,68 @@
 </head>
 <body>
 <section>
-    <div class="container p-4">
-        <div class="row">
-            <div class="col-md-8 offset-md-2">
-                <div class="card">
-                    <div class="card-header text-center">
-                        <h3>Book Ticket</h3>
-                        <!-- Display error message if there is any -->
-                        <p class="text-center text-danger" th:text="${session.error}"></p>
-                    </div>
-                    <div class="card-body">
-                        <form action="/user/bookTicket" method="post">
-                            <div class="form-group">
-                                <label for="passengerName">Passenger Name</label>
-                                <input type="text" class="form-control" id="passengerName" name="passengerName"
-                                       placeholder="Enter Passenger Name" required>
-                            </div>
-                            <!-- <div class="form-group">
-                                <label for="seatno">Seat Number</label>
-                                <select class="form-control" id="seatno" name="seatno" required>
-                                    <option th:each="seat : ${bus.seats}" th:text="${seat.seatNo}" th:value="${seat.seatNo}"
-                                            th:if="${!seat.booked}"></option>
-                                </select>
-                            </div> -->
-                            <div class="form-group">
-							    <label for="seatno">Seat Number</label>
-							    <select class="form-control" id="seatno" name="seatno" required>
-							        <option th:each="seat : ${bus.seats}" th:text="${seat.seatNo}" th:value="${seat.seatNo}"></option>
-							    </select>
-							</div>
-                            <div class="form-group">
-                                <label for="date">Date</label>
-                                <input type="date" class="form-control" id="date" name="date" required>
-                            </div>
-                            <input type="hidden" name="busId" th:value="${bus.id}">
-                            <div class="form-group">
-                                <label>Ticket Price</label>
-                                <p th:text="${ticketPrice}"></p> 
-                            </div>
-                            <button type="submit" class="btn btn-success mt-2">Book Ticket</button>
-                        </form>
-                    </div>
+   
+
+<div class="container p-4">
+    <div class="row">
+        <!-- Bus Information Div (Left Side) -->
+        <div class="col-md-3 mb-4 d-flex justify-content-start">
+            <div class="card bus-info-card">
+                <div class="card-body text-start p-3">
+                    <h5 class="mb-4 text-center">Bus Information</h5>
+                    <!-- Display each information on a new line -->
+                    <p>Bus No: <br><span th:text="${bus.busNo}"></span></p>
+                    <p>Starting Place: <br><span th:text="${bus.startPlace}"></span></p>
+                    <p>Destination: <br><span th:text="${bus.destination}"></span></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Form Div (Right Side, aligned closer to the left) -->
+        <div class="col-md-8 form-container">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h3>Book Ticket</h3>
+                    <p class="text-center text-danger" th:text="${session.error}"></p>
+                    <th:block th:text="${@userServiceImpl.deleteSessionMessage()}"></th:block>
+                </div>
+                <div class="card-body">
+                    <form action="/user/bookTicket" method="post">
+                        <div class="form-group mb-3">
+                            <label for="passengerName">Enter Passenger Name</label>
+                            <input type="text" class="form-control" id="passengerName" name="passengerName" placeholder="Enter Passenger Name" required>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="seatno">Select Seat Number</label>
+                            <select class="form-control" id="seatno" name="seatno" required>
+                                <option value="" disabled selected>Select a Seat</option>
+                                <option th:each="seat : ${seatOptions}" th:text="${seat}" th:value="${seat.substring(4)}"></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group mb-3">
+                            <label for="date">Choose Date</label>
+                            <input type="date" class="form-control" id="date" name="date" required>
+                        </div>
+
+                        <input type="hidden" name="busId" th:value="${bus.id}">
+                        
+                        <div class="form-group">
+                            <label>Ticket Price :</label>
+                            <span th:text="${ticketPrice}"></span> 
+                        </div>
+
+                        <button type="submit" class="btn btn-success mt-2">Book Ticket</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
+
+
+
 </section>
 </body>
 </html>

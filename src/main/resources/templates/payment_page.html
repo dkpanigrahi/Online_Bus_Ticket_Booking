@@ -17,12 +17,12 @@
                     </div>
                     <div class="card-body">
                         <p><strong>Passenger Name:</strong> <span th:text="${ticket.passengerName}"></span></p>
-                        <p><strong>Seat Number:</strong> <span th:text="${ticket.seatno}"></span></p>
-                        <p><strong>Date:</strong> <span th:text="${ticket.date}"></span></p>
+                        <p><strong>Seat Number:</strong> <span th:text="${ticket.seatNo}"></span></p>
+                        <p><strong>Date:</strong> <span th:text="${ticket.bookingDate}"></span></p>
                         <p><strong>Bus Number:</strong> <span th:text="${ticket.bus.busNo}"></span></p>
                         <p><strong>Starting Place:</strong> <span th:text="${ticket.bus.startPlace}"></span></p>
                         <p><strong>Destination Place:</strong> <span th:text="${ticket.bus.destination}"></span></p>
-                        <p><strong>Ticket Price:</strong> <span th:text="${ticketPrice}"></span></p> Display ticket price
+                        <p><strong>Ticket Price:</strong> <span th:text="${ticketPrice}"></span></p>
                         <hr>
                         <h4>Payment Details</h4>
                         <form action="dummy/payment/confirm" method="post">

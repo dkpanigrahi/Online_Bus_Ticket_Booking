@@ -19,7 +19,7 @@
                         <h3>Search Buses</h3>
                         
                         <th:block th:if="${session.msg}">
-                            <p class="text-center text-success" th:text="${session.msg}"></p>
+                            <p class="text-center text-danger" th:text="${session.msg}"></p>
                             <th:block th:text="${@userServiceImpl.deleteSessionMessage()}"></th:block>
                         </th:block>
                     </div>
@@ -28,12 +28,12 @@
                             <div class="container">
                                 <div class="row">
                                     <div class="col">
-                                        <label for="startPlace">Starting Place:</label>
+                                        <label for="startPlace" class="fw-bold">Starting Place:</label>
                                         <input type="text" class="form-control" id="startPlace" name="startPlace"
                                                placeholder="Enter Starting Place" required>
                                     </div>
                                     <div class="col">
-                                        <label for="destination">Destination Place:</label>
+                                        <label for="destination" class="fw-bold">Destination Place:</label>
                                         <input type="text" class="form-control" id="destination" name="destination"
                                                placeholder="Enter Destination Place" required>
                                     </div>
@@ -50,12 +50,10 @@
 
         <!-- Display Search Results -->
         <div class="row mt-4">
-            <div class="col-md-10 offset-md-1">
+            <div class="col-md-12">
                 <div class="card">
                     <div class="card-header text-center">
-                        <h3>Search
-
- Results</h3>
+                        <h3>Search Results</h3>
                     </div>
                     <div class="card-body">
                         <table class="table">
