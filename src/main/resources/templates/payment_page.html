@@ -22,9 +22,10 @@
                         <p><strong>Bus Number:</strong> <span th:text="${ticket.bus.busNo}"></span></p>
                         <p><strong>Starting Place:</strong> <span th:text="${ticket.bus.startPlace}"></span></p>
                         <p><strong>Destination Place:</strong> <span th:text="${ticket.bus.destination}"></span></p>
+                        <p><strong>Departure Time:</strong> <span th:text="${ticket.bus.departureTime}"></span></p>
                         <p><strong>Ticket Price:</strong> <span th:text="${ticketPrice}"></span></p>
                         <hr>
-                        <h4>Payment Details</h4>
+                        <h4><i class="fa-light fa-credit-card"></i>Payment Details</h4>
                         <form action="dummy/payment/confirm" method="post">
                             <div class="form-group">
                                 <label for="cardNumber">Card Number</label>

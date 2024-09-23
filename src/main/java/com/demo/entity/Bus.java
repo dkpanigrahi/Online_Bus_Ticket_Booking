@@ -24,6 +24,8 @@ public class Bus {
 	
 	private String destination;
 	
+	private String departureTime;
+	
 	private int totalSeats;
 	
 	private int ticketPrice;
@@ -65,6 +67,14 @@ public class Bus {
 
 	public void setDestination(String destination) {
 		this.destination = destination;
+	}
+
+	public String getDepartureTime() {
+		return departureTime;
+	}
+
+	public void setDepartureTime(String departureTime) {
+		this.departureTime = departureTime;
 	}
 
 	public int getTotalSeats() {

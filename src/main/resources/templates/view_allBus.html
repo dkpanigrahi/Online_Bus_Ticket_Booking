@@ -25,6 +25,7 @@
                                   <th scope="col">Bus No.</th>
                                   <th scope="col">Starting Place</th>
                                   <th scope="col">Destination Place</th>
+                                  <th scope="col">Departure Time</th>
                                   <th scope="col">No. Of Seat</th>
                                   <th scope="col">Ticket Price</th>
                                   <th scope="col">Driver Name</th>
@@ -38,6 +39,7 @@
                                     <td th:text="${bus.busNo}"></td>
                                     <td th:text="${bus.startPlace}"></td>
                                     <td th:text="${bus.destination}"></td>
+                                    <td th:text="${bus.departureTime}"></td>
                                     <td th:text="${bus.totalSeats}"></td>
                                     <td th:text="${bus.ticketPrice}"></td>
                                     <td th:text="${bus.driver.name}"></td>
