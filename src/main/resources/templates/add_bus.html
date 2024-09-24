@@ -34,10 +34,28 @@
                                 <label for="destination">Enter Destination Place</label>
                                 <input type="text" class="form-control" id="destination" name="destination" required>
                             </div>
+                            
                             <div class="mb-3">
-                                <label for="destination">Enter Departure Time</label>
-                                <input type="text" class="form-control" id="departureTime" name="departureTime" required>
-                            </div>
+							    <label for="departureTime">Enter Departure Time</label>
+							    <input type="time" class="form-control" id="departureTime" name="departureTime" required>
+							</div>
+							
+							<div class="mb-3">
+							    <label>Choose Available Days:</label><br>
+							    <input type="radio" id="everyDay" name="availableDays" value="Every Day" required> Every Day<br>
+							    <input type="radio" id="specificDays" name="availableDays" value="Specific Days"> Specific Days<br>
+							
+							    <div id="specificDaysOptions" style="display:none;">
+							        <input type="checkbox" id="monday" name="specificDays" value="Monday"> Monday<br>
+							        <input type="checkbox" id="tuesday" name="specificDays" value="Tuesday"> Tuesday<br>
+							        <input type="checkbox" id="wednesday" name="specificDays" value="Wednesday"> Wednesday<br>
+							        <input type="checkbox" id="thursday" name="specificDays" value="Thursday"> Thursday<br>
+							        <input type="checkbox" id="friday" name="specificDays" value="Friday"> Friday<br>
+							        <input type="checkbox" id="saturday" name="specificDays" value="Saturday"> Saturday<br>
+							        <input type="checkbox" id="sunday" name="specificDays" value="Sunday"> Sunday<br>
+							    </div>
+							</div>
+
                             <div class="mb-3">
                                 <label for="totalSeats">Enter Total Seats</label>
                                 <input type="number" class="form-control" id="totalSeats" name="totalSeats" required>
@@ -66,6 +84,22 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const specificDaysOptions = document.getElementById("specificDaysOptions");
+        const everyDayRadio = document.getElementById("everyDay");
+        const specificDaysRadio = document.getElementById("specificDays");
+
+        // Function to toggle visibility of specific days
+        function toggleSpecificDays() {
+            specificDaysOptions.style.display = specificDaysRadio.checked ? "block" : "none";
+        }
+
+        // Add event listeners
+        everyDayRadio.addEventListener("change", toggleSpecificDays);
+        specificDaysRadio.addEventListener("change", toggleSpecificDays);
+    });
+</script>
 
     </section>
 </body>

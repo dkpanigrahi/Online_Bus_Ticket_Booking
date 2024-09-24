@@ -72,7 +72,6 @@ import org.springframework.security.web.authentication.SimpleUrlAuthenticationFa
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.authentication.logout.SimpleUrlLogoutSuccessHandler;
 
-import com.demo.listener.SessionListener;
 
 @Configuration
 @EnableWebSecurity
@@ -80,9 +79,6 @@ public class SecurityConfig {
 
     @Autowired
     private CustomAuthSuccessHandler successHandler;
-
-    @Autowired
-    private SessionListener sessionListener; // Ensure this bean is injected correctly
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {

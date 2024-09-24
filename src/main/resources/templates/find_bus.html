@@ -13,7 +13,7 @@
     </div>
     <div class="container p-4">
         <div class="row">
-            <div class="col-md-8 offset-md-2">
+            <div class="col-md-10 offset-md-1">
                 <div class="card">
                     <div class="card-header text-center">
                         <h3>Search Buses</h3>
@@ -36,6 +36,11 @@
                                         <label for="destination" class="fw-bold">Destination Place:</label>
                                         <input type="text" class="form-control" id="destination" name="destination"
                                                placeholder="Enter Destination Place" required>
+                                    </div>
+                                    
+                                    <div class="col">
+                                        <label for="date" class="fw-bold">Date:</label>
+                                    	<input type="date" class="form-control" id="date" name="date" required>
                                     </div>
                                     <div class="col">
                                         <button type="submit" class="btn btn-success mt-4">Search</button>
@@ -65,8 +70,7 @@
                                 <th scope="col">Departure Time</th>
                                 <th scope="col">Total Seats</th>
                                 <th scope="col">Ticket Price</th>
-                                <th scope="col">Driver Name</th>
-                                <th scope="col">Conductor Name</th>
+                                <th scope="col">Availability</th>
                                 <th scope="col">Action</th>
                             </tr>
                             </thead>
@@ -79,10 +83,18 @@
                                 <td th:text="${bus.departureTime}"></td>
                                 <td th:text="${bus.totalSeats}"></td>
                                 <td th:text="${bus.ticketPrice}"></td>
-                                <td th:text="${bus.driver.name}"></td>
-                                <td th:text="${bus.conductor.name}"></td>
                                 <td>
-                                    <a th:href="@{'/user/bookTicket/' + ${bus.id}}" class="btn btn-sm btn-success">Book</a>
+									    <span th:if="${bus.availableEveryDay}" th:text="'Every Day'"></span>
+									    <span th:if="${!bus.availableEveryDay}">
+									        <span th:if="${bus.specificDays != null && !bus.specificDays.isEmpty()}" 
+									              th:text="${bus.specificDays}"></span>
+									        <span th:if="${bus.specificDays == null || bus.specificDays.isEmpty()}" 
+									              th:text="'No Specific Days'"></span>
+									    </span>
+									</td>
+                                <td>
+                                    <a th:href="@{'/user/bookTicket/' + ${bus.id} + '?date=' + ${selectedDate}}" class="btn btn-sm btn-success">Book</a>
+
                                 </td>
                             </tr>
                             <!-- If no results found -->

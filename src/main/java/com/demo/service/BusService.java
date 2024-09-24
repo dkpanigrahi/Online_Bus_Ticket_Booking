@@ -18,6 +18,8 @@ public interface BusService {
 	
 	public void deleteBusById(int id);
 	
+	public List<Bus> findBusByDate(String startPlace, String destination, String dayOfWeek);
+	
 	
 	
 }

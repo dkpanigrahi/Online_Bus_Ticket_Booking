@@ -52,5 +52,11 @@ public class BusServiceImpl implements BusService {
 		return buslist;
 	}
 
+	@Override
+	public List<Bus> findBusByDate(String startPlace, String destination, String dayOfWeek) {
+		
+		return busRepository.findBusByDate(startPlace, destination, dayOfWeek);		
+	}
+
 
 }

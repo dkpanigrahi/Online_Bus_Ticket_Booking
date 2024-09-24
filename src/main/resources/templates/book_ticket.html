@@ -21,6 +21,13 @@
                     <p>Bus No: <br><span th:text="${bus.busNo}"></span></p>
                     <p>Starting Place: <br><span th:text="${bus.startPlace}"></span></p>
                     <p>Destination: <br><span th:text="${bus.destination}"></span></p>
+                    <p>Availability: <br><span th:if="${bus.availableEveryDay}" th:text="'Every Day'"></span>
+									    <span th:if="${!bus.availableEveryDay}">
+									        <span th:if="${bus.specificDays != null && !bus.specificDays.isEmpty()}" 
+									              th:text="${bus.specificDays}"></span>
+									        <span th:if="${bus.specificDays == null || bus.specificDays.isEmpty()}" 
+									              th:text="'No Specific Days'"></span>
+									    </span></p>
                 </div>
             </div>
         </div>
@@ -35,33 +42,35 @@
                 </div>
                 <div class="card-body">
                     <form action="/user/bookTicket" method="post">
-                        <div class="form-group mb-3">
-                            <label for="passengerName">Enter Passenger Name</label>
-                            <input type="text" class="form-control" id="passengerName" name="passengerName" placeholder="Enter Passenger Name" required>
-                        </div>
+					    <div class="form-group mb-3">
+					        <label for="passengerName">Enter Passenger Name</label>
+					        <input type="text" class="form-control" id="passengerName" name="passengerName" placeholder="Enter Passenger Name" required>
+					    </div>
+					
+					    <div class="form-group mb-2">
+					        <label for="seatno">Select Seat Number</label>
+					        <select class="form-control" id="seatno" name="seatno" required>
+					            <option value="" disabled selected>Select a Seat</option>
+					            <option th:each="seat : ${seatOptions}" th:text="${seat}" th:value="${seat.substring(4)}"></option>
+					        </select>
+					    </div>
+					
+					    <div class="form-group mb-2">
+					        <label>Date :</label>
+					        <span th:text="${fixedDate}"></span> <span th:text="${dayOfWeek}"></span>
+					    </div>
+					
+					    <div class="form-group">
+					        <label>Ticket Price :</label>
+					        <span th:text="${ticketPrice}"></span>
+					    </div>
+					
+					    <input type="hidden" name="busId" th:value="${bus.id}">
+					    <input type="hidden" name="date" th:value="${fixedDate}">
+					
+					    <button type="submit" class="btn btn-success mt-2">Book Ticket</button>
+					</form>
 
-                        <div class="form-group mb-3">
-                            <label for="seatno">Select Seat Number</label>
-                            <select class="form-control" id="seatno" name="seatno" required>
-                                <option value="" disabled selected>Select a Seat</option>
-                                <option th:each="seat : ${seatOptions}" th:text="${seat}" th:value="${seat.substring(4)}"></option>
-                            </select>
-                        </div>
-
-                        <div class="form-group mb-3">
-                            <label for="date">Choose Date</label>
-                            <input type="date" class="form-control" id="date" name="date" required>
-                        </div>
-
-                        <input type="hidden" name="busId" th:value="${bus.id}">
-                        
-                        <div class="form-group">
-                            <label>Ticket Price :</label>
-                            <span th:text="${ticketPrice}"></span> 
-                        </div>
-
-                        <button type="submit" class="btn btn-success mt-2">Book Ticket</button>
-                    </form>
                 </div>
             </div>
         </div>

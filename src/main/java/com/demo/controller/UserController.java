@@ -1,7 +1,10 @@
 package com.demo.controller;
 
 import java.security.Principal;
+import java.time.LocalDate;
+import java.time.format.TextStyle;
 import java.util.List;
+import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -64,9 +67,15 @@ public class UserController {
 	@PostMapping("/search")
     public String handleBusSearch(@RequestParam("startPlace") String startPlace,
                                   @RequestParam("destination") String destination,
+                                  @RequestParam("date") String date,
                                   Model model,HttpSession session) {
         
-        List<Bus> searchResults = busService.findBus(startPlace, destination);
+		// Parse the selected date and extract the day of the week
+	    LocalDate selectedDate = LocalDate.parse(date);
+	    String dayOfWeek = selectedDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+
+	    // Find buses available every day or on the specific day of the week
+	    List<Bus> searchResults = busService.findBusByDate(startPlace, destination, dayOfWeek);
         //System.out.println(searchResults);
         if (searchResults == null || searchResults.isEmpty()) {
             session.setAttribute("msg", "No Bus Available");
@@ -75,6 +84,7 @@ public class UserController {
         
         // Add search results to the model to be displayed in the view
         model.addAttribute("searchResults", searchResults);
+        model.addAttribute("selectedDate",date);
 
         return "find_bus"; 
     }

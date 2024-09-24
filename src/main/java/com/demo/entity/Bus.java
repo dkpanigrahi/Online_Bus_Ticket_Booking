@@ -1,114 +1,136 @@
 package com.demo.entity;
 
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
-import jakarta.persistence.CascadeType;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
 @Entity
 public class Bus {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-	
-	private String busNo;
-	
-	private String startPlace;
-	
-	private String destination;
-	
-	private String departureTime;
-	
-	private int totalSeats;
-	
-	private int ticketPrice;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-	@OneToOne
-	private Driver driver;
-	
-	@OneToOne
-	private Conductor conductor;
-	
+    private String busNo;
+    
+    private String startPlace;
+    
+    private String destination;
+    
+    private LocalTime departureTime;
+    
+    private boolean availableEveryDay;
 
-	public int getId() {
-		return id;
-	}
+    @ElementCollection
+    private List<String> specificDays;
+    
+    private int totalSeats;
+    
+    private int ticketPrice;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    @OneToOne
+    private Driver driver;
 
-	public String getBusNo() {
-		return busNo;
-	}
+    @OneToOne
+    private Conductor conductor;
 
-	public void setBusNo(String busNo) {
-		this.busNo = busNo;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public String getStartPlace() {
-		return startPlace;
-	}
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setStartPlace(String startPlace) {
-		this.startPlace = startPlace;
-	}
+    public String getBusNo() {
+        return busNo;
+    }
 
-	public String getDestination() {
-		return destination;
-	}
+    public void setBusNo(String busNo) {
+        this.busNo = busNo;
+    }
 
-	public void setDestination(String destination) {
-		this.destination = destination;
-	}
+    public String getStartPlace() {
+        return startPlace;
+    }
 
-	public String getDepartureTime() {
-		return departureTime;
-	}
+    public void setStartPlace(String startPlace) {
+        this.startPlace = startPlace;
+    }
 
-	public void setDepartureTime(String departureTime) {
-		this.departureTime = departureTime;
-	}
+    public String getDestination() {
+        return destination;
+    }
 
-	public int getTotalSeats() {
-		return totalSeats;
-	}
+    public void setDestination(String destination) {
+        this.destination = destination;
+    }
 
-	public void setTotalSeats(int totalSeats) {
-		this.totalSeats = totalSeats;
-	}
+   
+    public String getDepartureTime() {
+        if (departureTime != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
+            return departureTime.format(formatter);
+        }
+        return null;
+    }
 
-	public Driver getDriver() {
-		return driver;
-	}
+    public void setDepartureTime(LocalTime departureTime) {
+        this.departureTime = departureTime;
+    }
 
-	public void setDriver(Driver driver) {
-		this.driver = driver;
-	}
+    public int getTotalSeats() {
+        return totalSeats;
+    }
 
-	public Conductor getConductor() {
-		return conductor;
-	}
+    public void setTotalSeats(int totalSeats) {
+        this.totalSeats = totalSeats;
+    }
 
-	public void setConductor(Conductor conductor) {
-		this.conductor = conductor;
-	}
+    public Driver getDriver() {
+        return driver;
+    }
 
-	public int getTicketPrice() {
-		return ticketPrice;
-	}
+    public void setDriver(Driver driver) {
+        this.driver = driver;
+    }
 
-	public void setTicketPrice(int ticketPrice) {
-		this.ticketPrice = ticketPrice;
-	}
-	
-	
-	
+    public Conductor getConductor() {
+        return conductor;
+    }
+
+    public void setConductor(Conductor conductor) {
+        this.conductor = conductor;
+    }
+
+    public int getTicketPrice() {
+        return ticketPrice;
+    }
+
+    public void setTicketPrice(int ticketPrice) {
+        this.ticketPrice = ticketPrice;
+    }
+
+    public boolean isAvailableEveryDay() {
+        return availableEveryDay;
+    }
+
+    public void setAvailableEveryDay(boolean availableEveryDay) {
+        this.availableEveryDay = availableEveryDay;
+    }
+
+    public List<String> getSpecificDays() {
+        return specificDays;
+    }
+
+    public void setSpecificDays(List<String> specificDays) {
+        this.specificDays = specificDays;
+    }
 }

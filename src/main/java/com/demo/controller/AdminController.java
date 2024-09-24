@@ -1,6 +1,9 @@
 package com.demo.controller;
 
 import java.security.Principal;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.demo.dto.PasswordForm;
 import com.demo.entity.Bus;
@@ -86,29 +90,51 @@ public class AdminController {
 	
 	
 	@PostMapping("/createBus")
-    public String createBus(@ModelAttribute Bus bus, HttpSession session) {
-        // Save the bus first to get the bus ID
-        Bus savedBus = busService.savebus(bus);
+	public String createBus(@ModelAttribute Bus bus, 
+	                        @RequestParam String availableDays, 
+	                        @RequestParam(required = false) List<String> specificDays, 
+	                        HttpSession session) {
+	    String departureTimeStr = bus.getDepartureTime();
 
-		/*
-		 * // Generate seats based on totalSeats List<Seat> seats = new ArrayList<>();
-		 * for (int i = 1; i <= bus.getTotalSeats(); i++) { Seat seat = new Seat();
-		 * seat.setSeatNo("Seat " + i); seat.setBooked(false); seat.setBus(savedBus);
-		 * seats.add(seat); } seatService.saveAll(seats);
-		 * 
-		 * savedBus.setSeats(seats); busService.savebus(savedBus);
-		 */
+	    try {
+	        // Create a DateTimeFormatter for 12-hour format with AM/PM
+	        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("hh:mm a");
 
-        session.setAttribute("msg", "Bus added successfully with seats!");
+	        // Parse the input string into a LocalTime object
+	        LocalTime departureTime = LocalTime.parse(departureTimeStr, formatter);
+	        
+	        // Set the parsed LocalTime into the Bus object
+	        bus.setDepartureTime(departureTime);
+	        
+	        // Set availability based on the selected options
+	        if ("Every Day".equals(availableDays)) {
+	            bus.setAvailableEveryDay(true);
+	            bus.setSpecificDays(null); // Clear specific days if available every day
+	        } else {
+	            bus.setAvailableEveryDay(false);
+	            bus.setSpecificDays(specificDays); // Set specific days
+	        }
+	        
+	        // Save the bus object
+	        busService.savebus(bus);
+	        
+	        session.setAttribute("msg", "Bus added successfully");
+	    } catch (DateTimeParseException e) {
+	        session.setAttribute("msg", "Invalid time format. Please use hh:mm AM/PM.");
+	        return "redirect:/admin/addBus"; 
+	    } catch (Exception e) {
+	        session.setAttribute("msg", "An error occurred while adding the bus. Please try again.");
+	        return "redirect:/admin/addBus";
+	    }
 
-        return "redirect:/admin/addBus";
-    }
-	
-	
+	    return "redirect:/admin/addBus";
+	}
+
 	@GetMapping("/viewBus")
 	public String viewBus(Model m)
 	{
 		List<Bus> allBus = busService.getAllBus();
+		allBus.forEach(x -> System.out.println(x.getSpecificDays()));
 		
 		m.addAttribute("busList",allBus);
 		return "view_allBus";

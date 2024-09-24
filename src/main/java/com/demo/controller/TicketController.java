@@ -3,8 +3,11 @@ package com.demo.controller;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,62 +63,78 @@ public class TicketController {
     }
 
     @GetMapping("/bookTicket/{busId}")
-    public String bookTicketForm(@PathVariable("busId") int busId, HttpSession session, Model model) {
+    public String bookTicketForm(@PathVariable("busId") int busId,
+                                 @RequestParam("date") String date,
+                                 HttpSession session, Model model) {
         Bus bus = busRepository.findById(busId).orElse(null);
         if (bus == null) {
             session.setAttribute("error", "Bus not found!!!!");
             return "error_page";
         }
-        
-        
+
+        // Parse the date string and find the day of the week
+        LocalDate selectedDate = LocalDate.parse(date);
+        String dayOfWeek = selectedDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.ENGLISH);
+
+        // Prepare seat options
         List<String> seatOptions = new ArrayList<>();
         for (int i = 1; i <= bus.getTotalSeats(); i++) {
             seatOptions.add("Seat" + i); 
         }
+
         model.addAttribute("seatOptions", seatOptions); 
         model.addAttribute("bus", bus);
         model.addAttribute("ticketPrice", bus.getTicketPrice());
+        model.addAttribute("fixedDate", date); 
+        model.addAttribute("dayOfWeek", dayOfWeek);
 
         return "book_ticket";
     }
+
 
 
     @Transactional
     @PostMapping("/bookTicket")
     public String bookTicket(@RequestParam("passengerName") String passengerName,
                              @RequestParam("seatno") int seatNo,
-                             @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                             @RequestParam("date") String date,
                              @RequestParam("busId") int busId,
                              Principal principal,
-                             HttpSession session,Model model) {
+                             HttpSession session, Model model) {
+        
         if (principal == null) {
             session.setAttribute("error", "User not authenticated");
             return "redirect:/user/bookTicket/" + busId;
         }
 
+        // Convert String date to LocalDate
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate bookingDate = LocalDate.parse(date, formatter);
 
         String email = principal.getName();
         User user = userRepo.findByEmail(email);
         Bus bus = busRepository.findById(busId).orElse(null);
+        
         if (bus == null) {
             session.setAttribute("error", "Bus not found");
             return "redirect:/user/bookTicket/" + busId;
         }
 
         // Check if the seat is already booked or in process for the selected date
-        Booking existingBooking = bookingRepository.findBySeatNoAndBookingDate(seatNo, date);
+        Booking existingBooking = bookingRepository.findBySeatNoAndBookingDate(seatNo, bookingDate);
         if (existingBooking != null && (existingBooking.isBooked() || existingBooking.isInProcess())) {
             session.setAttribute("error", "Seat " + seatNo + " is already booked or in process for this date");
-            return "redirect:/user/bookTicket/" + busId;
+            return "redirect:/user/bookTicket/" + busId + "?date=" + date;
+
         }
 
         // Create a new booking (temporarily lock the seat)
         Booking booking = new Booking();
         booking.setSeatNo(seatNo);
         booking.setPassengerName(passengerName);
-        booking.setBookingDate(date);
+        booking.setBookingDate(bookingDate);  // Use the LocalDate here
         booking.setInProcess(true);  // Mark as "in process" while payment is being handled
-        booking.setExpirationTime(LocalDateTime.now().plusMinutes(10)); // Temporary hold for 10 minutes
+        booking.setExpirationTime(LocalDateTime.now().plusMinutes(5)); // Temporary hold for 10 minutes
         booking.setUser(user);
         booking.setBus(bus);
 
